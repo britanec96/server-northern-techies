@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 // Проверка CAPTCHA
 app.post("/", async (req, res) => {
   const { token } = req.body;
-  const secretKey = "6Ld2568qAAAAADTk3p4-bWURNJm9NzRJeFcTA3hZ"; 
+  const secretKey = "6Ldl_K8qAAAAAMPESbVFneqqiaaQ35cSBqBbAEYX"; 
 
   try {
     const response = await fetch(
