@@ -7,7 +7,14 @@ const app = express();
 const PORT = process.env.PORT || 5000; // Railway передает порт в переменную PORT
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://northerntechies.com", "http://localhost:3000"], // Разрешение для фронтенда и локального хоста
+    methods: ["GET", "POST"], // Разрешенные методы
+    allowedHeaders: ["Content-Type"], // Разрешенные заголовки
+  })
+);
+
 app.use(bodyParser.json());
 
 // Проверка CAPTCHA
