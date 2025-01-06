@@ -18,7 +18,7 @@ app.use(
 app.use(bodyParser.json());
 
 // Проверка CAPTCHA
-app.post("/verify-captcha", async (req, res) => {
+app.post("/", async (req, res) => {
   const { token } = req.body;
   const secretKey = "6Ld2568qAAAAADTk3p4-bWURNJm9NzRJeFcTA3hZ"; 
 
@@ -37,10 +37,6 @@ app.post("/verify-captcha", async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error." });
   }
-});
-
-app.get("/verify-captcha","/", (req, res) => {
-  res.send("Server is running");
 });
 
 
