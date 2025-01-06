@@ -1,1 +1,15 @@
-/node_modules
+# Директория node_modules
+node_modules/
+
+# Логи
+*.log
+
+# Настройки IDE (например, для VS Code)
+.vscode/
+
+# Файлы, которые генерируются при деплое
+dist/
+build/
+
+# Файлы окружения
+.env
