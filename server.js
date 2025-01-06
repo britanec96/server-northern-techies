@@ -39,7 +39,7 @@ app.post("/verify-captcha", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
+app.get("/verify-captcha","/", (req, res) => {
   res.send("Server is running");
 });
 
