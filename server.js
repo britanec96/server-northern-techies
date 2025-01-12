@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000; // Railway передает порт в �
 // Middleware
 app.use(
   cors({
-    origin: ["https://northerntechies.com", "http://localhost:3000"], // Разрешение для фронтенда и локального хоста
+    origin: ["https://northerntechies.com", "localhost:3000"], // Разрешение для фронтенда и локального хоста
     methods: ["GET", "POST"], // Разрешенные методы
     allowedHeaders: ["Content-Type"], // Разрешенные заголовки
   })
@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 // Проверка CAPTCHA
 app.post("/", async (req, res) => {
   const { token } = req.body;
-  const secretKey = "6Ldl_K8qAAAAAMPESbVFneqqiaaQ35cSBqBbAEYX"; 
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
 
   try {
     const response = await fetch(
