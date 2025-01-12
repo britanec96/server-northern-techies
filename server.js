@@ -5,10 +5,10 @@ import bodyParser from "body-parser";
 import expressRateLimit from "express-rate-limit";
 
 const app = express();
-const PORT = process.env.PORT || 5000; // Railway передает порт в переменную PORT
+const PORT = process.env.PORT || 5000;
 
 // Разрешённые домены
-const allowedDomains = ["https://northerntechies.com", "http://localhost:3000", "https://localhost:3000"];
+const allowedDomains = ["https://www.northerntechies.com", "http://localhost:3000"];
 
 // Middleware
 app.use(
@@ -20,24 +20,27 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST"], // Разрешенные методы
-    allowedHeaders: ["Content-Type"], // Разрешенные заголовки
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.use(bodyParser.json());
 
-// Настройка лимита запросов
+// Лимит запросов
 const formLimiter = expressRateLimit({
-  windowMs: 15 * 60 * 1000, // 15 минут
-  max: 10, // Максимум 10 запросов с одного IP
+  windowMs: 15 * 60 * 1000,
+  max: 10,
   message: {
     success: false,
-    message: "Too many requests from this IP, please try again after 15 minutes.",
+    message: "Too many requests from this IP, please try again later.",
   },
 });
 
-// Проверка CAPTCHA с ограничением запросов
+// Обработка OPTIONS-запросов
+app.options("*", cors());
+
+// Проверка CAPTCHA
 app.post("/", formLimiter, async (req, res) => {
   const { token } = req.body;
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
@@ -60,11 +63,11 @@ app.post("/", formLimiter, async (req, res) => {
       res.status(400).json({
         success: false,
         message: "Captcha verification failed.",
-        errors: data["error-codes"], // Передача ошибок для отладки
+        errors: data["error-codes"],
       });
     }
   } catch (error) {
-    console.error("Server error during CAPTCHA verification:", error.message);
+    console.error("Server error:", error.message);
     res.status(500).json({ success: false, message: "Server error during CAPTCHA verification." });
   }
 });
