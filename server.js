@@ -2,6 +2,7 @@ import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
 import bodyParser from "body-parser";
+import expressRateLimit from "express-rate-limit";
 
 const app = express();
 const PORT = process.env.PORT || 5000; // Railway передает порт в переменную PORT
@@ -17,8 +18,18 @@ app.use(
 
 app.use(bodyParser.json());
 
-// Проверка CAPTCHA
-app.post("/", async (req, res) => {
+// Настройка лимита запросов
+const formLimiter = expressRateLimit({
+  windowMs: 15 * 60 * 1000, // 15 минут
+  max: 3, // Максимум 3 запросов с одного IP
+  message: {
+    success: false,
+    message: "Too many requests from this IP, please try again after 15 minutes.",
+  },
+});
+
+// Проверка CAPTCHA с ограничением запросов
+app.post("/", formLimiter, async (req, res) => {
   const { token } = req.body;
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
 
@@ -38,7 +49,6 @@ app.post("/", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error." });
   }
 });
-
 
 // Запуск сервера
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
